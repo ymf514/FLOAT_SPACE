@@ -181,6 +181,6 @@ function mousePressed() {
   
   // Check if clicking on Publication image
   if (dist(mouseX, mouseY, positions.rightX, positions.centerY) < imgSize / 2) {
-    window.open('Publication/float within the world.pdf', '_blank');
+    window.open('Publication/floatWithinTheWorld.pdf', '_blank');
   }
 }
