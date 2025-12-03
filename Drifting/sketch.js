@@ -57,6 +57,8 @@ const BODY_REPULSION_RADIUS = 80; // distance within which clouds are pushed awa
 const BODY_REPULSION_FORCE = 3.5; // strength of push-away force
 let showSkeleton = false; // toggle for skeleton visualization
 let toggleButton = null; // button to toggle skeleton view
+let bgToggleButton = null; // button to toggle background (white/camera)
+let useWhiteBg = false; // whether to use white background instead of camera
 
 function setup() {
 	// Use the full size of the containing page by default
@@ -94,6 +96,9 @@ function setup() {
 
 	// create toggle button for skeleton visualization
 	createToggleButton();
+	
+	// create toggle button for background
+	createBgToggleButton();
 }
 
 function preload() {
@@ -119,8 +124,10 @@ function computeBgTransform() {
 }
 
 function draw() {
-	// draw webcam as background (mirrored)
-	if (video && video.loadedmetadata) {
+	// draw background: white or webcam (mirrored)
+	if (useWhiteBg) {
+		background(255);
+	} else if (video && video.loadedmetadata) {
 		push();
 		translate(width, 0);
 		scale(-1, 1); // flip horizontally for mirror effect
@@ -329,9 +336,48 @@ function createToggleButton() {
 		toggleButton.style('transform', 'scale(1.1)');
 	});
 	toggleButton.mouseOut(() => {
-		toggleButton.style('background', 'rgba(255, 255, 255, 0.7)');
-		toggleButton.style('transform', 'scale(1)');
 	});
+}
+
+// create background toggle button
+function createBgToggleButton() {
+	bgToggleButton = createDiv('⚪️');
+	bgToggleButton.position(80, height - 60); // 60px to the right of skeleton button
+	bgToggleButton.style('font-size', '32px');
+	bgToggleButton.style('cursor', 'pointer');
+	bgToggleButton.style('background', 'rgba(255, 255, 255, 0.7)');
+	bgToggleButton.style('border-radius', '50%');
+	bgToggleButton.style('width', '50px');
+	bgToggleButton.style('height', '50px');
+	bgToggleButton.style('display', 'flex');
+	bgToggleButton.style('align-items', 'center');
+	bgToggleButton.style('justify-content', 'center');
+	bgToggleButton.style('user-select', 'none');
+	bgToggleButton.style('transition', 'all 0.2s');
+	bgToggleButton.mousePressed(toggleBackground);
+	// hover effect
+	bgToggleButton.mouseOver(() => {
+		bgToggleButton.style('background', 'rgba(255, 255, 255, 0.9)');
+		bgToggleButton.style('transform', 'scale(1.1)');
+	});
+	bgToggleButton.mouseOut(() => {
+		if (useWhiteBg) {
+			bgToggleButton.style('background', 'rgba(100, 200, 255, 0.8)');
+		} else {
+			bgToggleButton.style('background', 'rgba(255, 255, 255, 0.7)');
+		}
+		bgToggleButton.style('transform', 'scale(1)');
+	});
+}
+
+// toggle background between white and camera
+function toggleBackground() {
+	useWhiteBg = !useWhiteBg;
+	if (useWhiteBg) {
+		bgToggleButton.style('background', 'rgba(100, 200, 255, 0.8)');
+	} else {
+		bgToggleButton.style('background', 'rgba(255, 255, 255, 0.7)');
+	}
 }
 
 // toggle skeleton visualization
@@ -359,10 +405,15 @@ function drawSkeleton() {
 				if (a.confidence > 0.3 && b.confidence > 0.3) {
 					let x1 = width - a.x; // mirror x
 					let y1 = a.y;
-					let x2 = width - b.x; // mirror x
-					let y2 = b.y;
-					line(x1, y1, x2, y2);
-				}
+	// reposition toggle button
+	if (toggleButton) {
+		toggleButton.position(20, height - 60);
+	}
+	
+	// reposition background toggle button
+	if (bgToggleButton) {
+		bgToggleButton.position(80, height - 60);
+	}		}
 			}
 		}
 		
