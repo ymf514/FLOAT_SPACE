@@ -93,7 +93,7 @@ function draw() {
   textSize(imgSize / 8 - 5);
   text('A space where color drifts, light softens, and your movements shape the air.', 
        windowWidth / 2, windowHeight - 40);
-  text('A floating system by Mingfu Yang', 
+  text('A floating system by Mingfu', 
        windowWidth / 2, windowHeight - 20);
 }
 
